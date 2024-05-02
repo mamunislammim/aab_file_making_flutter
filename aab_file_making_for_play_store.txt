@@ -1,0 +1,86 @@
+
+Follow this Steps: 
+
+First Open CMD in your PC and past this Command for making jsk file
+
+====>    keytool -genkey -v -keystore C:/Users/User/Documents/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+
+/// C:/Users/User/Documents   this is your app PC C drive location where you save .jks file  ///
+
+set Keystore Data Example : 
+ 
+Enter keystore password: 102613    /// as your wish
+Re-enter new password: 102613
+What is your first and last name?
+  [Unknown]:  Mamun Islam
+What is the name of your organizational unit?
+  [Unknown]:  Classic It
+What is the name of your organization?
+  [Unknown]:  Classic It
+What is the name of your City or Locality?
+  [Unknown]:  Uttara
+What is the name of your State or Province?
+  [Unknown]:  Dhaka
+What is the two-letter country code for this unit?
+  [Unknown]:  88
+Is CN=Mamun Islam, OU=Classic It, O=Classic It, L=Uttara, ST=Dhaka, C=88 correct?
+  [no]:  yes
+
+
+
+Next Setup project which you want to make aab file : 
+
+copy jks file and past in your project :
+
+Android > App > upload-keystore.jks
+then make a file key.properties in Android folder
+Android > key.properties
+inside this key.properties file you neet to write this some lines :
+
+storePassword=102613    // Keystore password when you setup Keystore in command line
+keyPassword=102613
+keyAlias=upload
+storeFile=../app/upload-keystore.jks
+
+Last stpe is in Android>App>build.gradle 
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}   
+
+past this lines in up to Android class
+
+after that you need to past  
+
+ signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+
+in defaultConfig class
+
+
+and when you need to make aab file then past this command in project terminal : 
+
+====>>>  flutter build appbundle --release --no-tree-shake-icons
+
+===================== END  ==============================
+
+
+
+
+
+
+
+
